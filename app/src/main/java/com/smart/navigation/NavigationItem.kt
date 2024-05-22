@@ -7,9 +7,9 @@ sealed class NavigationItem(var route: String, var icon: Int, var title: String)
         "home", R.drawable.ic_home, "Главная"
     )
     data object Signaling : NavigationItem(
-        "signaling", R.drawable.ic_music, "Сигнализация"
+        "signaling", R.drawable.ic_signaling, "Сигнализация"
     )
     data object Settings : NavigationItem(
-        "settings", R.drawable.ic_movie, "Настройки"
+        "settings", R.drawable.ic_settings, "Настройки"
     )
 }

@@ -16,11 +16,7 @@ import com.smart.R
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
-    val items = listOf(
-        NavigationItem.Home,
-        NavigationItem.Signaling,
-        NavigationItem.Settings
-    )
+    val pages = pages
     val backgroundColor = colorResource(id = R.color.backgroundColor)
     val textColor = colorResource(id = R.color.textColor)
     val selectedColor = colorResource(id = R.color.selectedColor)
@@ -30,16 +26,16 @@ fun BottomNavigationBar(navController: NavController) {
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
-        items.forEach { item ->
+        pages.forEach { page ->
             BottomNavigationItem(
-                icon = { Icon(painterResource(id = item.icon), contentDescription = item.title) },
-                label = { Text(text = item.title) },
+                icon = { Icon(painterResource(id = page.icon), contentDescription = page.title) },
+                label = { Text(text = page.title) },
                 selectedContentColor = selectedColor,
                 unselectedContentColor = textColor,
                 alwaysShowLabel = true,
-                selected = currentRoute == item.route,
+                selected = currentRoute == page.route,
                 onClick = {
-                    navController.navigate(item.route) {
+                    navController.navigate(page.route) {
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items

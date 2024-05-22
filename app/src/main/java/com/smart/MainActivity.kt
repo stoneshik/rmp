@@ -28,7 +28,7 @@ fun MainScreen() {
     val backgroundColor = colorResource(id = R.color.backgroundColor)
     val navController = rememberNavController()
     Scaffold(
-        topBar = { TopBar() },
+        topBar = { TopBar(navController) },
         bottomBar = { BottomNavigationBar(navController) },
         content = { padding ->
             Box(modifier = Modifier.padding(padding)) {
