@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+    val backgroundColor = colorResource(id = R.color.backgroundColor)
     val navController = rememberNavController()
     Scaffold(
         topBar = { TopBar() },
@@ -34,7 +35,7 @@ fun MainScreen() {
                 Navigation(navController = navController)
             }
         },
-        backgroundColor = colorResource(R.color.colorPrimaryDark) // Set background color to avoid the white flashing when you switch between screens
+        backgroundColor = backgroundColor // Set background color to avoid the white flashing when you switch between screens
     )
 }
 

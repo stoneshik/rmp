@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.smart.screens.GraphScreen
 import com.smart.screens.HomeScreen
 import com.smart.screens.SettingScreen
+import com.smart.screens.Signaling
 
 @Composable
 fun Navigation(navController: NavHostController) {
@@ -14,8 +14,8 @@ fun Navigation(navController: NavHostController) {
         composable(NavigationItem.Home.route) {
             HomeScreen()
         }
-        composable(NavigationItem.Graphs.route) {
-            GraphScreen()
+        composable(NavigationItem.Signaling.route) {
+            Signaling()
         }
         composable(NavigationItem.Settings.route) {
             SettingScreen()

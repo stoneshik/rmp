@@ -11,10 +11,12 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun TopBar() {
+    val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
+    val textColor: Color = colorResource(id = R.color.textColor)
     TopAppBar(
         title = { Text(text = stringResource(R.string.app_name), fontSize = 18.sp) },
-        backgroundColor = colorResource(id = R.color.colorPrimary),
-        contentColor = Color.White
+        backgroundColor = backgroundColor,
+        contentColor = textColor
     )
 }
 

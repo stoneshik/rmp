@@ -17,17 +17,19 @@ import androidx.compose.ui.unit.sp
 import com.smart.R
 
 @Composable
-fun GraphScreen() {
+fun Signaling() {
+    val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
+    val textColor: Color = colorResource(id = R.color.textColor)
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.colorPrimaryDark))
+            .background(backgroundColor)
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "График",
+            text = "Сигнализация",
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = textColor,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 25.sp
@@ -37,6 +39,6 @@ fun GraphScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun GraphScreenPreview() {
-    GraphScreen()
+fun SignalingPreview() {
+    Signaling()
 }

@@ -18,16 +18,18 @@ import com.smart.R
 
 @Composable
 fun HomeScreen() {
+    val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
+    val textColor: Color = colorResource(id = R.color.textColor)
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.colorPrimaryDark))
+            .background(backgroundColor)
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
             text = "Главная",
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = textColor,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 25.sp

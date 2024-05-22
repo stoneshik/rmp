@@ -6,24 +6,27 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.smart.R
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         NavigationItem.Home,
-        NavigationItem.Graphs,
+        NavigationItem.Signaling,
         NavigationItem.Settings
     )
+    val backgroundColor = colorResource(id = R.color.backgroundColor)
+    val textColor = colorResource(id = R.color.textColor)
+    val selectedColor = colorResource(id = R.color.selectedColor)
     BottomNavigation(
-        backgroundColor = colorResource(id = R.color.colorPrimary),
-        contentColor = Color.White
+        backgroundColor = backgroundColor,
+        contentColor = textColor
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -31,8 +34,8 @@ fun BottomNavigationBar(navController: NavController) {
             BottomNavigationItem(
                 icon = { Icon(painterResource(id = item.icon), contentDescription = item.title) },
                 label = { Text(text = item.title) },
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.White.copy(0.4f),
+                selectedContentColor = selectedColor,
+                unselectedContentColor = textColor,
                 alwaysShowLabel = true,
                 selected = currentRoute == item.route,
                 onClick = {
@@ -60,5 +63,6 @@ fun BottomNavigationBar(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun BottomNavigationBarPreview() {
-    // BottomNavigationBar()
+    val navController = rememberNavController()
+    BottomNavigationBar(navController)
 }
