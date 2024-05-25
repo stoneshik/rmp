@@ -1,6 +1,6 @@
 package com.smart
 
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,7 +33,9 @@ fun TopBar(navController: NavController) {
     } else {
         filterPages[0].title
     }
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
+        rememberTopAppBarState()
+    )
 
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
