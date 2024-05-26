@@ -4,4 +4,6 @@
     <color name="textColor">#5C5D5F</color>
     <color name="selectedColor">#CFD3D6</color>
     <color name="backgroundElementColor">#F0F0F0</color>
+    <color name="backgroundSelectElementColor">#877CDA</color>
+    <color name="selectElementTextColor">#FFFFFF</color>
 </resources>

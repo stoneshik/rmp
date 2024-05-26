@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.smart.navigation.BottomNavigationBar
 import com.smart.navigation.Navigation
+import com.smart.navigation.NavigationItem
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val backgroundColor = colorResource(id = R.color.backgroundColor)
     val navController = rememberNavController()
-    val titleTopBar = remember{mutableStateOf("")}
+    val titleTopBar = remember{mutableStateOf(NavigationItem.Home.title)}
     Scaffold(
         topBar = { TopBar(titleTopBar) },
         bottomBar = {

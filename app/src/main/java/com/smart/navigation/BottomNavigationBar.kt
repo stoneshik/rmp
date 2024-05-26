@@ -23,7 +23,7 @@ import com.smart.R
 
 @Composable
 fun BottomNavigationBar(navController: NavController, titleTopBar: MutableState<String>) {
-    val pages = listOf(
+    val pages = arrayOf(
         NavigationItem.Home,
         NavigationItem.Signaling,
         NavigationItem.Settings
