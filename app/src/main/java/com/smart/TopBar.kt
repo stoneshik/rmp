@@ -1,42 +1,29 @@
 package com.smart
 
-import androidx.compose.material3.Text
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.smart.navigation.pages
+import com.smart.navigation.NavigationItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController) {
-    val pages = pages
+fun TopBar(titleTopBar: MutableState<String>) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     val textColor: Color = colorResource(id = R.color.textColor)
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    val filterPages = pages.filter { page ->
-        currentRoute == page.route
-    }
-    val titleText = if (filterPages.isEmpty()) {
-        pages[0].title
-    } else {
-        filterPages[0].title
-    }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
         rememberTopAppBarState()
     )
-
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = backgroundColor,
@@ -44,10 +31,10 @@ fun TopBar(navController: NavController) {
         ),
         title = {
             Text(
-                text = titleText,
+                text = titleTopBar.value,
                 fontWeight = FontWeight.Medium,
                 color = textColor,
-                fontSize = 25.sp
+                fontSize = 26.sp
             )
         },
         scrollBehavior = scrollBehavior,
@@ -57,6 +44,8 @@ fun TopBar(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun TopBarPreview() {
-    val navController = rememberNavController()
-    TopBar(navController)
+    val titleTopBar = remember{
+        mutableStateOf(NavigationItem.Home.title)
+    }
+    TopBar(titleTopBar)
 }
