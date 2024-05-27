@@ -8,7 +8,9 @@ import androidx.navigation.compose.composable
 import com.smart.screens.SettingScreen
 import com.smart.screens.Signaling
 import com.smart.screens.home.HomeScreen
-import com.smart.screens.room.RoomScreen
+import com.smart.screens.room.pages.Humidity
+import com.smart.screens.room.pages.Lights
+import com.smart.screens.room.pages.Temperature
 
 @Composable
 fun Navigation(
@@ -28,8 +30,28 @@ fun Navigation(
         composable(NavigationItem.Settings.route) {
             SettingScreen()
         }
-        composable(NavigationItem.Room.route) {
-            RoomScreen()
+        val functionItems = arrayOf(
+            NavigationItem.Temperature,
+            NavigationItem.Lights,
+            NavigationItem.Humidity
+        )
+        composable(NavigationItem.Temperature.route) {
+            Temperature(
+                navController = navController,
+                functionItems = functionItems
+            )
+        }
+        composable(NavigationItem.Lights.route) {
+            Lights(
+                navController = navController,
+                functionItems = functionItems
+            )
+        }
+        composable(NavigationItem.Humidity.route) {
+            Humidity(
+                navController = navController,
+                functionItems = functionItems
+            )
         }
     }
 }

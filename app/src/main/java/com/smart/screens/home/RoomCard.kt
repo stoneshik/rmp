@@ -41,7 +41,7 @@ fun RoomCard(
     roomIcon: RoomIcon
 ) {
     val backgroundElementColor: Color = colorResource(id = R.color.backgroundElementColor)
-    val pageRoute: String = NavigationItem.Room.route
+    val pageRoute: String = NavigationItem.Temperature.route
     Card(
         colors = CardDefaults.cardColors(
             containerColor = backgroundElementColor,

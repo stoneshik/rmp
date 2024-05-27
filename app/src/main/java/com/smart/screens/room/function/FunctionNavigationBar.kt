@@ -5,21 +5,22 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.smart.R
+import com.smart.navigation.NavigationItem
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FunctionNavigationBar(
-    route: MutableState<FunctionRoute>,
-    functionItems: Array<FunctionItem>
+    navController: NavController,
+    pageRoute: String,
+    functionItems: Array<NavigationItem>
 ) {
     val backgroundElementColor: Color = colorResource(id = R.color.backgroundElementColor)
     val textColor: Color = colorResource(id = R.color.textColor)
@@ -33,21 +34,21 @@ fun FunctionNavigationBar(
         maxItemsInEachRow = rows,
     ) {
         for (navigationItem in functionItems) {
-            if (navigationItem.route == route.value) {
+            if (navigationItem.route.equals(pageRoute)) {
                 FunctionCard(
-                    route = route,
+                    navController = navController,
                     functionItem = navigationItem,
                     backgroundElementColor = backgroundSelectElementColor,
                     textColor = selectElementTextColor
                 )
-                continue
+            } else {
+                FunctionCard(
+                    navController = navController,
+                    functionItem = navigationItem,
+                    backgroundElementColor = backgroundElementColor,
+                    textColor = textColor
+                )
             }
-            FunctionCard(
-                route = route,
-                functionItem = navigationItem,
-                backgroundElementColor = backgroundElementColor,
-                textColor = textColor
-            )
         }
     }
 }
@@ -55,16 +56,16 @@ fun FunctionNavigationBar(
 @Preview(showBackground = true)
 @Composable
 fun FunctionNavigationBarPreview() {
-    val route = remember{
-        mutableStateOf(FunctionItem.Lights.route)
-    }
+    val navController = rememberNavController()
+    val pageRoute = NavigationItem.Humidity.route
     val functionItems = arrayOf(
-        FunctionItem.Temperature,
-        FunctionItem.Lights,
-        FunctionItem.Humidity
+        NavigationItem.Temperature,
+        NavigationItem.Lights,
+        NavigationItem.Humidity
     )
     FunctionNavigationBar(
-        route = route,
+        navController = navController,
+        pageRoute = pageRoute,
         functionItems = functionItems
     )
 }
