@@ -15,7 +15,9 @@ import com.smart.screens.room.pages.Temperature
 @Composable
 fun Navigation(
     navController: NavHostController,
-    titleTopBar: MutableState<String>
+    titleTopBar: MutableState<String>,
+    serverIp: MutableState<String>,
+    serverPort: MutableState<String>
 ) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
@@ -28,7 +30,10 @@ fun Navigation(
             Signaling()
         }
         composable(NavigationItem.Settings.route) {
-            SettingScreen()
+            SettingScreen(
+                serverIp = serverIp,
+                serverPort = serverPort
+            )
         }
         val functionItems = arrayOf(
             NavigationItem.Temperature,

@@ -13,12 +13,12 @@ sealed class NavigationItem(var route: String, var icon: Int, var title: String)
         "settings", R.drawable.ic_settings, "Настройки"
     )
     data object Temperature : NavigationItem(
-        "temperature_room", R.drawable.ic_home, "Температура"
+        "temperature_room", R.drawable.ic_thermostat, "Температура"
     )
     data object Lights : NavigationItem(
-        "lights_room", R.drawable.ic_signaling, "Свет"
+        "lights_room", R.drawable.ic_lamp, "Свет"
     )
     data object Humidity : NavigationItem(
-        "humidity_room", R.drawable.ic_settings, "Влажность"
+        "humidity_room", R.drawable.ic_water_drop, "Влажность"
     )
 }

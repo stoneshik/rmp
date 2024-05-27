@@ -6,4 +6,5 @@
     <color name="backgroundElementColor">#F0F0F0</color>
     <color name="backgroundSelectElementColor">#877CDA</color>
     <color name="selectElementTextColor">#FFFFFF</color>
+    <color name="errorTextColor">#FF4001</color>
 </resources>

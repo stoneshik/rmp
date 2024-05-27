@@ -10,6 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +33,8 @@ fun MainScreen() {
     val backgroundColor = colorResource(id = R.color.backgroundColor)
     val navController = rememberNavController()
     val titleTopBar = remember{mutableStateOf(NavigationItem.Home.title)}
+    val serverIp = rememberSaveable { mutableStateOf("") }
+    val serverPort = rememberSaveable { mutableStateOf("") }
     Scaffold(
         topBar = { TopBar(titleTopBar) },
         bottomBar = {
@@ -44,7 +47,9 @@ fun MainScreen() {
             Box(modifier = Modifier.padding(padding)) {
                 Navigation(
                     navController = navController,
-                    titleTopBar = titleTopBar
+                    titleTopBar = titleTopBar,
+                    serverIp = serverIp,
+                    serverPort = serverPort
                 )
             }
         },

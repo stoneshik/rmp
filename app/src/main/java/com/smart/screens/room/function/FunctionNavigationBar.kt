@@ -24,7 +24,9 @@ fun FunctionNavigationBar(
 ) {
     val backgroundElementColor: Color = colorResource(id = R.color.backgroundElementColor)
     val textColor: Color = colorResource(id = R.color.textColor)
-    val backgroundSelectElementColor: Color = colorResource(id = R.color.backgroundSelectElementColor)
+    val backgroundSelectElementColor: Color = colorResource(
+        id = R.color.backgroundSelectElementColor
+    )
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
     val rows = 3
     FlowRow(
