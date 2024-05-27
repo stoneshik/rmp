@@ -32,9 +32,11 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val backgroundColor = colorResource(id = R.color.backgroundColor)
     val navController = rememberNavController()
-    val titleTopBar = remember{mutableStateOf(NavigationItem.Home.title)}
+    val titleTopBar = remember { mutableStateOf(NavigationItem.Home.title) }
     val serverIp = rememberSaveable { mutableStateOf("") }
-    val serverPort = rememberSaveable { mutableStateOf("") }
+    val serverPort = remember { mutableStateOf("") }
+    val signalingIsWork = remember { mutableStateOf(false) }
+    val signalingState = remember { mutableStateOf(true) }
     Scaffold(
         topBar = { TopBar(titleTopBar) },
         bottomBar = {
@@ -49,7 +51,9 @@ fun MainScreen() {
                     navController = navController,
                     titleTopBar = titleTopBar,
                     serverIp = serverIp,
-                    serverPort = serverPort
+                    serverPort = serverPort,
+                    signalingIsWork = signalingIsWork,
+                    signalingState = signalingState
                 )
             }
         },

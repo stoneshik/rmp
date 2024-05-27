@@ -17,7 +17,9 @@ fun Navigation(
     navController: NavHostController,
     titleTopBar: MutableState<String>,
     serverIp: MutableState<String>,
-    serverPort: MutableState<String>
+    serverPort: MutableState<String>,
+    signalingIsWork: MutableState<Boolean>,
+    signalingState: MutableState<Boolean>
 ) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
@@ -27,7 +29,10 @@ fun Navigation(
             )
         }
         composable(NavigationItem.Signaling.route) {
-            Signaling()
+            Signaling(
+                signalingIsWork = signalingIsWork,
+                signalingState = signalingState
+            )
         }
         composable(NavigationItem.Settings.route) {
             SettingScreen(
