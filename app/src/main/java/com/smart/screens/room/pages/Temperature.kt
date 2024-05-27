@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,9 @@ fun Temperature(
     functionItems: Array<NavigationItem>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
+    val backgroundSelectElementColor: Color = colorResource(
+        id = R.color.backgroundSelectElementColor
+    )
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
     val valueTemperature = remember { mutableFloatStateOf(0f) }
 
@@ -84,6 +88,12 @@ fun Temperature(
                 .fillMaxWidth()
                 .padding(bottom = 24.dp)
                 .padding(horizontal = 12.dp),
+            colors = ButtonColors(
+                contentColor = selectElementTextColor,
+                containerColor = backgroundSelectElementColor,
+                disabledContentColor = selectElementTextColor,
+                disabledContainerColor = backgroundSelectElementColor
+            )
         ) {
             Text(
                 text = "Установить значение",

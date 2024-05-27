@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +31,9 @@ fun SettingScreen(
     serverPort: MutableState<String>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
+    val backgroundSelectElementColor: Color = colorResource(
+        id = R.color.backgroundSelectElementColor
+    )
     val textColor: Color = colorResource(id = R.color.textColor)
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
     val errorTextColor: Color = colorResource(id = R.color.errorTextColor)
@@ -99,6 +103,12 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 24.dp),
+            colors = ButtonColors(
+                contentColor = selectElementTextColor,
+                containerColor = backgroundSelectElementColor,
+                disabledContentColor = selectElementTextColor,
+                disabledContainerColor = backgroundSelectElementColor
+            )
         ) {
             Text(
                 text = "Установить адрес сервера",
