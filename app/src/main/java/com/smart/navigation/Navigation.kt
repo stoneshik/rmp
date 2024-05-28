@@ -28,7 +28,9 @@ fun Navigation(
             HomeScreen(
                 navController = navController,
                 titleTopBar = titleTopBar,
-                dataSelectedRoom = dataSelectedRoom
+                dataSelectedRoom = dataSelectedRoom,
+                serverIp = serverIp,
+                serverPort = serverPort
             )
         }
         composable(NavigationItem.Signaling.route) {

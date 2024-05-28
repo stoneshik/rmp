@@ -5,8 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +35,7 @@ fun MainScreen() {
     val navController = rememberNavController()
     val titleTopBar = remember { mutableStateOf(NavigationItem.Home.title) }
     val serverIp = rememberSaveable { mutableStateOf("") }
-    val serverPort = remember { mutableStateOf("") }
+    val serverPort = rememberSaveable { mutableStateOf("") }
     val signalingIsWork = remember { mutableStateOf(false) }
     val signalingState = remember { mutableStateOf(true) }
     val dataSelectedRoom = remember {
@@ -69,7 +68,7 @@ fun MainScreen() {
                 )
             }
         },
-        backgroundColor = backgroundColor // Set background color to avoid the white flashing when you switch between screens
+        containerColor = backgroundColor // Set background color to avoid the white flashing when you switch between screens
     )
 }
 
