@@ -19,3 +19,12 @@ sealed class RoomIcon(var nameIcon: String, var icon: Int) {
         "studio", R.drawable.ic_table_lamp
     )
 }
+
+fun getRoomIconByNameIcon(roomIcons: Array<RoomIcon>, nameIcon: String) : Int {
+    for (roomIcon in roomIcons) {
+        if (roomIcon.nameIcon.equals(nameIcon)) {
+            return roomIcon.icon
+        }
+    }
+    return RoomIcon.LivingRoom.icon
+}

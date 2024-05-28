@@ -20,7 +20,7 @@ import com.smart.navigation.NavigationItem
 fun FunctionNavigationBar(
     navController: NavController,
     pageRoute: String,
-    functionItems: Array<NavigationItem>
+    functionItems: List<NavigationItem>
 ) {
     val backgroundElementColor: Color = colorResource(id = R.color.backgroundElementColor)
     val textColor: Color = colorResource(id = R.color.textColor)
@@ -60,7 +60,7 @@ fun FunctionNavigationBar(
 fun FunctionNavigationBarPreview() {
     val navController = rememberNavController()
     val pageRoute = NavigationItem.Humidity.route
-    val functionItems = arrayOf(
+    val functionItems = listOf(
         NavigationItem.Temperature,
         NavigationItem.Lights,
         NavigationItem.Humidity

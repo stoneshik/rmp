@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.smart.screens.SettingScreen
 import com.smart.screens.Signaling
 import com.smart.screens.home.HomeScreen
+import com.smart.screens.home.RoomData
 import com.smart.screens.room.pages.Humidity
 import com.smart.screens.room.pages.Lights
 import com.smart.screens.room.pages.Temperature
@@ -19,13 +20,15 @@ fun Navigation(
     serverIp: MutableState<String>,
     serverPort: MutableState<String>,
     signalingIsWork: MutableState<Boolean>,
-    signalingState: MutableState<Boolean>
+    signalingState: MutableState<Boolean>,
+    dataSelectedRoom: MutableState<RoomData>
 ) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
             HomeScreen(
                 navController = navController,
-                titleTopBar = titleTopBar
+                titleTopBar = titleTopBar,
+                dataSelectedRoom = dataSelectedRoom
             )
         }
         composable(NavigationItem.Signaling.route) {

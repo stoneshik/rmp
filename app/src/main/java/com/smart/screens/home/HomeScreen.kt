@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -18,27 +19,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
 import com.smart.navigation.NavigationItem
+import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
-    titleTopBar: MutableState<String>
+    titleTopBar: MutableState<String>,
+    dataSelectedRoom: MutableState<RoomData>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
-    val valuesCards = listOf(
-        listOf("Гостиная", RoomIcon.LivingRoom),
-        listOf("Спальня", RoomIcon.Bedroom),
-        listOf("Кухня", RoomIcon.Kitchen),
-        listOf("Ванная", RoomIcon.Bathroom),
-        listOf("Студия", RoomIcon.Studio),
-    )
+    val dataRooms = loadRoomData()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,12 +52,20 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             maxItemsInEachRow = rows,
         ) {
-            for (valueCard in valuesCards) {
+            if (dataRooms.isEmpty()) {
+                Text(
+                    text = "Данные не получены от сервера",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                )
+                return
+            }
+            for (roomData in dataRooms) {
                 RoomCard(
                     navController = navController,
                     titleTopBar = titleTopBar,
-                    titleText = valueCard[0].toString(),
-                    roomIcon = valueCard[1] as RoomIcon
+                    roomData = roomData,
+                    dataSelectedRoom = dataSelectedRoom
                 )
             }
         }
@@ -72,8 +79,31 @@ fun HomeScreenPreview() {
     val titleTopBar = remember{
         mutableStateOf(NavigationItem.Home.title)
     }
+   val dataSelectedRoom = remember {
+       mutableStateOf(
+           RoomData(
+               0,
+               NavigationItem.Home.title,
+               RoomIcon.LivingRoom.nameIcon
+           )
+       )
+   }
     HomeScreen(
         navController = navController,
-        titleTopBar = titleTopBar
+        titleTopBar = titleTopBar,
+        dataSelectedRoom = dataSelectedRoom
     )
+}
+
+fun loadRoomData(): Array<RoomData> {
+    val json = """
+        [
+          {"id": 0, "title": "Гостинная", "nameIcon": "living_room"},
+          {"id": 1, "title": "Спальня", "nameIcon": "bedroom"},
+          {"id": 2, "title": "Кухня", "nameIcon": "kitchen"},
+          {"id": 3, "title": "Ванная", "nameIcon": "bathroom"},
+          {"id": 4, "title": "Студия", "nameIcon": "studio"}
+        ] 
+    """.trimIndent()
+    return Json.decodeFromString<Array<RoomData>>(json)
 }

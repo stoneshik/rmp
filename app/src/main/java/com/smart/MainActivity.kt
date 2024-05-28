@@ -18,6 +18,8 @@ import androidx.navigation.compose.rememberNavController
 import com.smart.navigation.BottomNavigationBar
 import com.smart.navigation.Navigation
 import com.smart.navigation.NavigationItem
+import com.smart.screens.home.RoomData
+import com.smart.screens.home.RoomIcon
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +39,15 @@ fun MainScreen() {
     val serverPort = remember { mutableStateOf("") }
     val signalingIsWork = remember { mutableStateOf(false) }
     val signalingState = remember { mutableStateOf(true) }
+    val dataSelectedRoom = remember {
+        mutableStateOf(
+            RoomData(
+                0,
+                NavigationItem.Home.title,
+                RoomIcon.LivingRoom.nameIcon
+            )
+        )
+    }
     Scaffold(
         topBar = { TopBar(titleTopBar) },
         bottomBar = {
@@ -53,7 +64,8 @@ fun MainScreen() {
                     serverIp = serverIp,
                     serverPort = serverPort,
                     signalingIsWork = signalingIsWork,
-                    signalingState = signalingState
+                    signalingState = signalingState,
+                    dataSelectedRoom = dataSelectedRoom
                 )
             }
         },

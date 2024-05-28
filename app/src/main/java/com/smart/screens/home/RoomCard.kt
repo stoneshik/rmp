@@ -37,9 +37,16 @@ import com.smart.navigation.changePage
 fun RoomCard(
     navController: NavController,
     titleTopBar: MutableState<String>,
-    titleText: String,
-    roomIcon: RoomIcon
+    dataSelectedRoom: MutableState<RoomData>,
+    roomData: RoomData
 ) {
+    val roomIcons = arrayOf(
+        RoomIcon.LivingRoom,
+        RoomIcon.Bedroom,
+        RoomIcon.Kitchen,
+        RoomIcon.Bathroom,
+        RoomIcon.Studio
+    )
     val backgroundElementColor: Color = colorResource(id = R.color.backgroundElementColor)
     val pageRoute: String = NavigationItem.Temperature.route
     Card(
@@ -52,8 +59,9 @@ fun RoomCard(
                     navController = navController,
                     pageRoute = pageRoute,
                     titleTopBar = titleTopBar,
-                    pageTitle = titleText
+                    pageTitle = roomData.title
                 )
+                dataSelectedRoom.value = roomData
             }
         )
     ) {
@@ -67,13 +75,18 @@ fun RoomCard(
                 .clip(RoundedCornerShape(4.dp)),
         ) {
             Image(
-                painter = painterResource(roomIcon.icon),
+                painter = painterResource(
+                    getRoomIconByNameIcon(
+                        roomIcons = roomIcons,
+                        nameIcon = roomData.nameIcon
+                    )
+                ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(60.dp)
             )
             Text(
-                text = titleText,
+                text = roomData.title,
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
             )
@@ -89,12 +102,24 @@ fun RoomCardPreview() {
     val titleTopBar = remember{
         mutableStateOf(NavigationItem.Home.title)
     }
-    val titleText = NavigationItem.Home.title
-    val roomIcon = RoomIcon.LivingRoom
+    val roomData = RoomData(
+        0,
+        NavigationItem.Home.title,
+        RoomIcon.LivingRoom.nameIcon
+    )
+    val dataSelectedRoom = remember {
+        mutableStateOf(
+            RoomData(
+                0,
+                NavigationItem.Home.title,
+                RoomIcon.LivingRoom.nameIcon
+            )
+        )
+    }
     RoomCard(
         navController = navController,
         titleTopBar = titleTopBar,
-        titleText = titleText,
-        roomIcon = roomIcon
+        dataSelectedRoom = dataSelectedRoom,
+        roomData = roomData
     )
 }

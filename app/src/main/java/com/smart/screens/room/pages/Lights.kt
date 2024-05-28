@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.smart.R
 import com.smart.navigation.NavigationItem
 import com.smart.screens.room.function.FunctionNavigationBar
+import com.smart.screens.room.function.loadAndFilterFunctionItems
 import kotlin.math.roundToInt
 
 @Composable
@@ -50,10 +51,19 @@ fun Lights(
             .wrapContentSize(Alignment.TopCenter)
             .verticalScroll(rememberScrollState())
     ) {
+        val filteredFunctionItems = loadAndFilterFunctionItems(functionItems)
+        if (filteredFunctionItems.isEmpty()) {
+            Text(
+                text = "У выбранной комнаты нет функций",
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+            )
+            return
+        }
         FunctionNavigationBar(
             navController = navController,
             pageRoute = pageRoute,
-            functionItems = functionItems
+            functionItems = filteredFunctionItems
         )
         Text(
             text = "Освещенность сейчас: 100%",
