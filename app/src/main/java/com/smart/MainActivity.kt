@@ -34,8 +34,8 @@ fun MainScreen() {
     val backgroundColor = colorResource(id = R.color.backgroundColor)
     val navController = rememberNavController()
     val titleTopBar = remember { mutableStateOf(NavigationItem.Home.title) }
-    val serverIp = rememberSaveable { mutableStateOf("") }
-    val serverPort = rememberSaveable { mutableStateOf("") }
+    val serverIp = rememberSaveable { mutableStateOf("192.168.0.192") }
+    val serverPort = rememberSaveable { mutableStateOf("8080") }
     val signalingIsWork = remember { mutableStateOf(false) }
     val signalingState = remember { mutableStateOf(true) }
     val dataSelectedRoom = remember {

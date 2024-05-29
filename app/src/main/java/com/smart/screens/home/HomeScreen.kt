@@ -1,7 +1,6 @@
 package com.smart.screens.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,14 +28,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
-import com.smart.httpClient
 import com.smart.navigation.NavigationItem
-import io.ktor.client.features.ClientRequestException
-import io.ktor.client.features.ServerResponseException
-import io.ktor.client.request.get
-import io.ktor.client.request.url
-import kotlinx.coroutines.launch
-import java.util.concurrent.TimeoutException
+import kotlinx.serialization.json.Json
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okio.IOException
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalLayoutApi::class)
@@ -49,18 +47,15 @@ fun HomeScreen(
     serverIp: MutableState<String>,
     serverPort: MutableState<String>
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
 
-    var dataRooms: Array<RoomData> = emptyArray()
     val isLoaded = rememberSaveable { mutableStateOf(false) }
-    coroutineScope.launch {
-        dataRooms = loadRoomData(
-            serverIp = serverIp.value,
-            serverPort = serverPort.value
-        )
-        isLoaded.value = true
-    }
+    val dataRooms = loadRoomData(
+        serverIp = serverIp.value,
+        serverPort = serverPort.value,
+        isLoaded = isLoaded
+    )
+    isLoaded.value = true
 
     Column(
         modifier = Modifier
@@ -123,27 +118,61 @@ fun HomeScreenPreview() {
     )
 }
 
-suspend fun loadRoomData(serverIp: String, serverPort: String): Array<RoomData> {
+fun loadRoomData(serverIp: String, serverPort: String, isLoaded: MutableState<Boolean>): Array<RoomData> {
+    if (serverIp.isEmpty() || serverPort.isEmpty()) {
+        return emptyArray()
+    }
     val tag = "MainActivity"
-    try {
-        val r = "http://${serverIp}:${serverPort}/room-data"
-        val roomDataJson = httpClient.get<Array<RoomData>> {
-            url("http://${serverIp}:${serverPort}/room-data")
+    val client = OkHttpClient()
+    val url = "http://${serverIp}:${serverPort}/room-data"
+    val request = Request.Builder()
+        .url(url)
+        .build()
+    var responseBody = ""
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            e.printStackTrace()
         }
-        httpClient.close()
-        return roomDataJson
-    } catch (e: ClientRequestException) {
-        Log.d(tag, "ClientRequestException ${e.message}")
-    } catch (e: ServerResponseException) {
-        Log.d(tag, "ServerResponseException ${e.message}")
-    } catch (e: TimeoutException) {
-        Log.d(tag, "TimeoutException ${e.message}")
+        override fun onResponse(call: Call, response: Response) {
+            response.use {
+                isLoaded.value = true
+                responseBody = response.body?.string() ?: ""
+                //println(response.body!!.string())
+            }
+        }
+    })
+    /*try {
+        val response = client.newCall(request).execute()
+        responseBody = response.body?.string() ?: ""
     } catch (e: Exception) {
         Log.d(tag, "Exception ${e.message}")
-    } finally {
-        httpClient.close()
     }
-    return emptyArray()
+    if (responseBody.isEmpty()) {
+        return emptyArray()
+    }*/
+    return Json.decodeFromString<Array<RoomData>>(responseBody)
+
+    /*if (serverIp.isEmpty() || serverPort.isEmpty()) {
+        return emptyArray()
+    }
+    val tag = "MainActivity"
+    val client = OkHttpClient()
+    val url = "http://${serverIp}:${serverPort}/room-data"
+    val request = Request.Builder()
+        .url(url)
+        .build()
+    var responseBody = ""
+    try {
+        val response = client.newCall(request).execute()
+        responseBody = response.body?.string() ?: ""
+    } catch (e: Exception) {
+        Log.d(tag, "Exception ${e.message}")
+    }
+    if (responseBody.isEmpty()) {
+        return emptyArray()
+    }
+    return Json.decodeFromString<Array<RoomData>>(responseBody)*/
     /*val json = """
         [
           {"id": 0, "title": "Гостинная", "nameIcon": "living_room"},
