@@ -45,18 +45,17 @@ fun HomeScreen(
     titleTopBar: MutableState<String>,
     dataSelectedRoom: MutableState<RoomData>,
     serverIp: MutableState<String>,
-    serverPort: MutableState<String>
+    serverPort: MutableState<String>,
+    dataRoomsString: MutableState<String>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
-
-    val isLoaded = rememberSaveable { mutableStateOf(false) }
-    val dataRooms = loadRoomData(
-        serverIp = serverIp.value,
-        serverPort = serverPort.value,
-        isLoaded = isLoaded
-    )
-    isLoaded.value = true
-
+    if (dataRoomsString.value.isEmpty()) {
+        loadRoomData(
+            serverIp = serverIp.value,
+            serverPort = serverPort.value,
+            dataRoomsString = dataRoomsString
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +70,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             maxItemsInEachRow = rows,
         ) {
-            if (dataRooms.isEmpty()) {
+            if (dataRoomsString.value.isEmpty()) {
                 Text(
                     text = "Данные не получены от сервера",
                     fontSize = 24.sp,
@@ -79,6 +78,7 @@ fun HomeScreen(
                 )
                 return
             }
+            val dataRooms = Json.decodeFromString<Array<RoomData>>(dataRoomsString.value)
             for (roomData in dataRooms) {
                 RoomCard(
                     navController = navController,
@@ -109,18 +109,20 @@ fun HomeScreenPreview() {
    }
     val serverIp = rememberSaveable { mutableStateOf("127.0.0.1") }
     val serverPort = rememberSaveable { mutableStateOf("8080") }
+    val dataRoomsString = remember { mutableStateOf("[{\"id\":0,\"title\":\"Гостиная\",\"nameIcon\":\"living_room\"},{\"id\":1,\"title\":\"Спальня\",\"nameIcon\":\"bedroom\"},{\"id\":2,\"title\":\"Кухня\",\"nameIcon\":\"kitchen\"},{\"id\":3,\"title\":\"Ванная\",\"nameIcon\":\"bathroom\"},{\"id\":4,\"title\":\"Студия\",\"nameIcon\":\"studio\"}]") }
     HomeScreen(
         navController = navController,
         titleTopBar = titleTopBar,
         dataSelectedRoom = dataSelectedRoom,
         serverIp = serverIp,
-        serverPort = serverPort
+        serverPort = serverPort,
+        dataRoomsString = dataRoomsString
     )
 }
 
-fun loadRoomData(serverIp: String, serverPort: String, isLoaded: MutableState<Boolean>): Array<RoomData> {
+fun loadRoomData(serverIp: String, serverPort: String, dataRoomsString: MutableState<String>) {
     if (serverIp.isEmpty() || serverPort.isEmpty()) {
-        return emptyArray()
+        return
     }
     val tag = "MainActivity"
     val client = OkHttpClient()
@@ -128,59 +130,18 @@ fun loadRoomData(serverIp: String, serverPort: String, isLoaded: MutableState<Bo
     val request = Request.Builder()
         .url(url)
         .build()
-    var responseBody = ""
-
     client.newCall(request).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
             e.printStackTrace()
         }
         override fun onResponse(call: Call, response: Response) {
             response.use {
-                isLoaded.value = true
-                responseBody = response.body?.string() ?: ""
-                //println(response.body!!.string())
+                val responseBody = response.body?.string() ?: ""
+                if (responseBody.isEmpty()) {
+                    return
+                }
+                dataRoomsString.value = responseBody
             }
         }
     })
-    /*try {
-        val response = client.newCall(request).execute()
-        responseBody = response.body?.string() ?: ""
-    } catch (e: Exception) {
-        Log.d(tag, "Exception ${e.message}")
-    }
-    if (responseBody.isEmpty()) {
-        return emptyArray()
-    }*/
-    return Json.decodeFromString<Array<RoomData>>(responseBody)
-
-    /*if (serverIp.isEmpty() || serverPort.isEmpty()) {
-        return emptyArray()
-    }
-    val tag = "MainActivity"
-    val client = OkHttpClient()
-    val url = "http://${serverIp}:${serverPort}/room-data"
-    val request = Request.Builder()
-        .url(url)
-        .build()
-    var responseBody = ""
-    try {
-        val response = client.newCall(request).execute()
-        responseBody = response.body?.string() ?: ""
-    } catch (e: Exception) {
-        Log.d(tag, "Exception ${e.message}")
-    }
-    if (responseBody.isEmpty()) {
-        return emptyArray()
-    }
-    return Json.decodeFromString<Array<RoomData>>(responseBody)*/
-    /*val json = """
-        [
-          {"id": 0, "title": "Гостинная", "nameIcon": "living_room"},
-          {"id": 1, "title": "Спальня", "nameIcon": "bedroom"},
-          {"id": 2, "title": "Кухня", "nameIcon": "kitchen"},
-          {"id": 3, "title": "Ванная", "nameIcon": "bathroom"},
-          {"id": 4, "title": "Студия", "nameIcon": "studio"}
-        ] 
-    """.trimIndent()
-    return Json.decodeFromString<Array<RoomData>>(json)*/
 }

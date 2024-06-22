@@ -47,6 +47,7 @@ fun MainScreen() {
             )
         )
     }
+    val dataRoomsString = remember { mutableStateOf("") }
     Scaffold(
         topBar = { TopBar(titleTopBar) },
         bottomBar = {
@@ -64,7 +65,8 @@ fun MainScreen() {
                     serverPort = serverPort,
                     signalingIsWork = signalingIsWork,
                     signalingState = signalingState,
-                    dataSelectedRoom = dataSelectedRoom
+                    dataSelectedRoom = dataSelectedRoom,
+                    dataRoomsString = dataRoomsString
                 )
             }
         },

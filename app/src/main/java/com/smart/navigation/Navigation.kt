@@ -21,7 +21,8 @@ fun Navigation(
     serverPort: MutableState<String>,
     signalingIsWork: MutableState<Boolean>,
     signalingState: MutableState<Boolean>,
-    dataSelectedRoom: MutableState<RoomData>
+    dataSelectedRoom: MutableState<RoomData>,
+    dataRoomsString: MutableState<String>
 ) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
@@ -30,7 +31,8 @@ fun Navigation(
                 titleTopBar = titleTopBar,
                 dataSelectedRoom = dataSelectedRoom,
                 serverIp = serverIp,
-                serverPort = serverPort
+                serverPort = serverPort,
+                dataRoomsString = dataRoomsString
             )
         }
         composable(NavigationItem.Signaling.route) {
