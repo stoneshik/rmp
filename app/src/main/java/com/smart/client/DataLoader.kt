@@ -11,9 +11,9 @@ class DataLoader {
     fun updateDataStringsIfLifetimeExceed(
         serverIp: MutableState<String>,
         serverPort: MutableState<String>,
-        dataRoomsString: MutableState<String>
+        isNeedUpdateDataRoomsString: MutableState<Boolean>
     ) {
-        dataRoomLivingSeconds++
+        /*dataRoomLivingSeconds++
         if (dataRoomLivingSeconds > DATA_ROOM_MAX_SECONDS) {
             dataRoomLivingSeconds = 0
             loadDataFromServer(
@@ -21,7 +21,19 @@ class DataLoader {
                 serverPort = serverPort.value,
                 dataString = dataRoomsString
             )
+        }*/
+        dataRoomLivingSeconds++
+        if (dataRoomLivingSeconds > DATA_ROOM_MAX_SECONDS) {
+            dataRoomLivingSeconds = 0
+            updateFlag(isNeedUpdateDataRoomsString)
         }
+    }
+
+    private fun updateFlag(flag: MutableState<Boolean>) {
+        if (flag.value) {
+            flag.value = false
+        }
+        flag.value = true
     }
 }
 
@@ -29,7 +41,7 @@ class DataLoader {
 fun scheduleDataLoading(
     serverIp: MutableState<String>,
     serverPort: MutableState<String>,
-    dataRoomsString: MutableState<String>
+    isNeedUpdateDataRoomsString: MutableState<Boolean>
 ) {
     val dataLoader = DataLoader()
     val mainHandler = Handler(Looper.getMainLooper())
@@ -38,7 +50,7 @@ fun scheduleDataLoading(
             dataLoader.updateDataStringsIfLifetimeExceed(
                 serverIp = serverIp,
                 serverPort = serverPort,
-                dataRoomsString = dataRoomsString
+                isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString
             )
             mainHandler.postDelayed(this, 1000)
         }

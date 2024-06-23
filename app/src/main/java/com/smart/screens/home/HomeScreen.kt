@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
+import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
 import kotlinx.serialization.json.Json
 
@@ -35,10 +37,21 @@ import kotlinx.serialization.json.Json
 fun HomeScreen(
     navController: NavController,
     titleTopBar: MutableState<String>,
+    serverIp: MutableState<String>,
+    serverPort: MutableState<String>,
     dataSelectedRoom: MutableState<RoomData>,
-    dataRoomsString: MutableState<String>
+    dataRoomsString: MutableState<String>,
+    isNeedUpdateDataRoomsString: MutableState<Boolean>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
+    if (isNeedUpdateDataRoomsString.value) {
+        loadDataFromServer(
+            serverIp = serverIp.value,
+            serverPort = serverPort.value,
+            dataString = dataRoomsString
+        )
+        isNeedUpdateDataRoomsString.value = false
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,24 +94,30 @@ fun HomeScreenPreview() {
     val titleTopBar = remember{
         mutableStateOf(NavigationItem.Home.title)
     }
-   val dataSelectedRoom = remember {
-       mutableStateOf(
-           RoomData(
-               0,
-               NavigationItem.Home.title,
-               RoomIcon.LivingRoom.nameIcon
-           )
-       )
-   }
+    val serverIp = rememberSaveable { mutableStateOf("") }
+    val serverPort = rememberSaveable { mutableStateOf("") }
+    val dataSelectedRoom = remember {
+        mutableStateOf(
+            RoomData(
+                0,
+                NavigationItem.Home.title,
+                RoomIcon.LivingRoom.nameIcon
+            )
+        )
+    }
     val dataRoomsString = remember {
         mutableStateOf(
             "[{\"id\":0,\"title\":\"Гостиная\",\"nameIcon\":\"living_room\"},{\"id\":1,\"title\":\"Спальня\",\"nameIcon\":\"bedroom\"},{\"id\":2,\"title\":\"Кухня\",\"nameIcon\":\"kitchen\"},{\"id\":3,\"title\":\"Ванная\",\"nameIcon\":\"bathroom\"},{\"id\":4,\"title\":\"Студия\",\"nameIcon\":\"studio\"}]"
         )
     }
+    val isNeedUpdateDataRoomsString = remember { mutableStateOf(false) }
     HomeScreen(
         navController = navController,
         titleTopBar = titleTopBar,
+        serverIp =  serverIp,
+        serverPort =  serverPort,
         dataSelectedRoom = dataSelectedRoom,
-        dataRoomsString = dataRoomsString
+        dataRoomsString = dataRoomsString,
+        isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString
     )
 }

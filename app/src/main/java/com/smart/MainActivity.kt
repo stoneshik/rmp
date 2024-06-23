@@ -49,11 +49,12 @@ fun MainScreen() {
         )
     }
     val dataRoomsString = remember { mutableStateOf("") }
+    val isNeedUpdateDataRoomsString = remember { mutableStateOf(true) }
 
     scheduleDataLoading(
         serverIp = serverIp,
         serverPort = serverPort,
-        dataRoomsString = dataRoomsString
+        isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString
     )
 
     Scaffold(
@@ -74,7 +75,8 @@ fun MainScreen() {
                     signalingIsWork = signalingIsWork,
                     signalingState = signalingState,
                     dataSelectedRoom = dataSelectedRoom,
-                    dataRoomsString = dataRoomsString
+                    dataRoomsString = dataRoomsString,
+                    isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString
                 )
             }
         },

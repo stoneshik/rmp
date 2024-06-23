@@ -22,15 +22,19 @@ fun Navigation(
     signalingIsWork: MutableState<Boolean>,
     signalingState: MutableState<Boolean>,
     dataSelectedRoom: MutableState<RoomData>,
-    dataRoomsString: MutableState<String>
+    dataRoomsString: MutableState<String>,
+    isNeedUpdateDataRoomsString: MutableState<Boolean>
 ) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
             HomeScreen(
                 navController = navController,
                 titleTopBar = titleTopBar,
+                serverIp =  serverIp,
+                serverPort =  serverPort,
                 dataSelectedRoom = dataSelectedRoom,
-                dataRoomsString = dataRoomsString
+                dataRoomsString = dataRoomsString,
+                isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString
             )
         }
         composable(NavigationItem.Signaling.route) {
