@@ -1,6 +1,5 @@
 package com.smart.screens.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,16 +27,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
+import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
 import kotlinx.serialization.json.Json
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okio.IOException
 
-@SuppressLint("CoroutineCreationDuringComposition")
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
@@ -50,11 +44,12 @@ fun HomeScreen(
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     if (dataRoomsString.value.isEmpty()) {
-        loadRoomData(
+        loadDataFromServer(
             serverIp = serverIp.value,
             serverPort = serverPort.value,
-            dataRoomsString = dataRoomsString
+            dataString = dataRoomsString
         )
+        return
     }
     Column(
         modifier = Modifier
@@ -72,7 +67,7 @@ fun HomeScreen(
         ) {
             if (dataRoomsString.value.isEmpty()) {
                 Text(
-                    text = "Данные не получены от сервера",
+                    text = "Нет соединения с сервером",
                     fontSize = 24.sp,
                     textAlign = TextAlign.Center,
                 )
@@ -109,7 +104,11 @@ fun HomeScreenPreview() {
    }
     val serverIp = rememberSaveable { mutableStateOf("127.0.0.1") }
     val serverPort = rememberSaveable { mutableStateOf("8080") }
-    val dataRoomsString = remember { mutableStateOf("[{\"id\":0,\"title\":\"Гостиная\",\"nameIcon\":\"living_room\"},{\"id\":1,\"title\":\"Спальня\",\"nameIcon\":\"bedroom\"},{\"id\":2,\"title\":\"Кухня\",\"nameIcon\":\"kitchen\"},{\"id\":3,\"title\":\"Ванная\",\"nameIcon\":\"bathroom\"},{\"id\":4,\"title\":\"Студия\",\"nameIcon\":\"studio\"}]") }
+    val dataRoomsString = remember {
+        mutableStateOf(
+            "[{\"id\":0,\"title\":\"Гостиная\",\"nameIcon\":\"living_room\"},{\"id\":1,\"title\":\"Спальня\",\"nameIcon\":\"bedroom\"},{\"id\":2,\"title\":\"Кухня\",\"nameIcon\":\"kitchen\"},{\"id\":3,\"title\":\"Ванная\",\"nameIcon\":\"bathroom\"},{\"id\":4,\"title\":\"Студия\",\"nameIcon\":\"studio\"}]"
+        )
+    }
     HomeScreen(
         navController = navController,
         titleTopBar = titleTopBar,
@@ -118,30 +117,4 @@ fun HomeScreenPreview() {
         serverPort = serverPort,
         dataRoomsString = dataRoomsString
     )
-}
-
-fun loadRoomData(serverIp: String, serverPort: String, dataRoomsString: MutableState<String>) {
-    if (serverIp.isEmpty() || serverPort.isEmpty()) {
-        return
-    }
-    val tag = "MainActivity"
-    val client = OkHttpClient()
-    val url = "http://${serverIp}:${serverPort}/room-data"
-    val request = Request.Builder()
-        .url(url)
-        .build()
-    client.newCall(request).enqueue(object : Callback {
-        override fun onFailure(call: Call, e: IOException) {
-            e.printStackTrace()
-        }
-        override fun onResponse(call: Call, response: Response) {
-            response.use {
-                val responseBody = response.body?.string() ?: ""
-                if (responseBody.isEmpty()) {
-                    return
-                }
-                dataRoomsString.value = responseBody
-            }
-        }
-    })
 }

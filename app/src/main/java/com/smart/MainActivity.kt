@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.smart.client.planningClearDataStrings
 import com.smart.navigation.BottomNavigationBar
 import com.smart.navigation.Navigation
 import com.smart.navigation.NavigationItem
@@ -48,6 +49,11 @@ fun MainScreen() {
         )
     }
     val dataRoomsString = remember { mutableStateOf("") }
+
+    planningClearDataStrings(
+        dataRoomsString = dataRoomsString
+    )
+
     Scaffold(
         topBar = { TopBar(titleTopBar) },
         bottomBar = {
