@@ -13,8 +13,11 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,15 +29,22 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
+import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
+import com.smart.screens.room.FunctionHumidityData
 import com.smart.screens.room.function.FunctionNavigationBar
-import com.smart.screens.room.function.loadAndFilterFunctionItems
+import com.smart.screens.room.function.filterFunctionItems
+import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
 @Composable
 fun Humidity(
     navController: NavController,
-    functionItems: Array<NavigationItem>
+    functionItems: Array<NavigationItem>,
+    serverIp: MutableState<String>,
+    serverPort: MutableState<String>,
+    dataHumidityString: MutableState<String>,
+    isNeedUpdateDataHumidityString: MutableState<Boolean>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     val backgroundSelectElementColor: Color = colorResource(
@@ -42,8 +52,16 @@ fun Humidity(
     )
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
     val valueHumidity = remember { mutableFloatStateOf(0f) }
-
     val pageRoute = NavigationItem.Humidity.route
+    if (isNeedUpdateDataHumidityString.value) {
+        loadDataFromServer(
+            serverIp = serverIp.value,
+            serverPort = serverPort.value,
+            dataString = dataHumidityString,
+            endpointName = "humidity-data/1"
+        )
+        isNeedUpdateDataHumidityString.value = false
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +69,19 @@ fun Humidity(
             .wrapContentSize(Alignment.TopCenter)
             .verticalScroll(rememberScrollState())
     ) {
-        val filteredFunctionItems = loadAndFilterFunctionItems(functionItems)
+        if (dataHumidityString.value.isEmpty()) {
+            Text(
+                text = "Нет соединения с сервером",
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+            )
+            return
+        }
+        val dataHumidity = Json.decodeFromString<FunctionHumidityData>(dataHumidityString.value)
+        val filteredFunctionItems = filterFunctionItems(
+            functionItems = functionItems,
+            enableFunctions = dataHumidity.enableFunctions
+        )
         if (filteredFunctionItems.isEmpty()) {
             Text(
                 text = "У выбранной комнаты нет функций",
@@ -66,7 +96,7 @@ fun Humidity(
             functionItems = filteredFunctionItems
         )
         Text(
-            text = "Влажность сейчас: 100%",
+            text = "Влажность сейчас: ${dataHumidity.humidity}%",
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -123,8 +153,20 @@ fun HumidityPreview() {
         NavigationItem.Lights,
         NavigationItem.Humidity
     )
+    val serverIp = rememberSaveable { mutableStateOf("") }
+    val serverPort = rememberSaveable { mutableStateOf("") }
+    val dataHumidityString = remember {
+        mutableStateOf(
+            ""
+        )
+    }
+    val isNeedUpdateDataHumidityString = remember { mutableStateOf(false) }
     Humidity(
         navController = navController,
-        functionItems = functionItems
+        functionItems = functionItems,
+        serverIp = serverIp,
+        serverPort = serverPort,
+        dataHumidityString = dataHumidityString,
+        isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString
     )
 }

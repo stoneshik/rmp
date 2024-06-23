@@ -22,8 +22,16 @@ fun Navigation(
     signalingIsWork: MutableState<Boolean>,
     signalingState: MutableState<Boolean>,
     dataSelectedRoom: MutableState<RoomData>,
+
     dataRoomsString: MutableState<String>,
-    isNeedUpdateDataRoomsString: MutableState<Boolean>
+    isNeedUpdateDataRoomsString: MutableState<Boolean>,
+
+    dataHumidityString: MutableState<String>,
+    isNeedUpdateDataHumidityString: MutableState<Boolean>,
+    dataLightsString: MutableState<String>,
+    isNeedUpdateDataLightsString: MutableState<Boolean>,
+    dataTemperatureString: MutableState<String>,
+    isNeedUpdateDataTemperatureString: MutableState<Boolean>
 ) {
     NavHost(navController, startDestination = NavigationItem.Home.route) {
         composable(NavigationItem.Home.route) {
@@ -57,19 +65,31 @@ fun Navigation(
         composable(NavigationItem.Temperature.route) {
             Temperature(
                 navController = navController,
-                functionItems = functionItems
+                functionItems = functionItems,
+                serverIp = serverIp,
+                serverPort = serverPort,
+                dataTemperatureString = dataTemperatureString,
+                isNeedUpdateDataTemperatureString = isNeedUpdateDataTemperatureString
             )
         }
         composable(NavigationItem.Lights.route) {
             Lights(
                 navController = navController,
-                functionItems = functionItems
+                functionItems = functionItems,
+                serverIp = serverIp,
+                serverPort = serverPort,
+                dataLightsString = dataLightsString,
+                isNeedUpdateDataLightsString = isNeedUpdateDataLightsString
             )
         }
         composable(NavigationItem.Humidity.route) {
             Humidity(
                 navController = navController,
-                functionItems = functionItems
+                functionItems = functionItems,
+                serverIp = serverIp,
+                serverPort = serverPort,
+                dataHumidityString = dataHumidityString,
+                isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString
             )
         }
     }

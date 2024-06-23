@@ -13,8 +13,11 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,15 +29,22 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
+import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
+import com.smart.screens.room.FunctionTemperatureData
 import com.smart.screens.room.function.FunctionNavigationBar
-import com.smart.screens.room.function.loadAndFilterFunctionItems
+import com.smart.screens.room.function.filterFunctionItems
+import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
 @Composable
 fun Temperature(
     navController: NavController,
-    functionItems: Array<NavigationItem>
+    functionItems: Array<NavigationItem>,
+    serverIp: MutableState<String>,
+    serverPort: MutableState<String>,
+    dataTemperatureString: MutableState<String>,
+    isNeedUpdateDataTemperatureString: MutableState<Boolean>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     val backgroundSelectElementColor: Color = colorResource(
@@ -42,8 +52,16 @@ fun Temperature(
     )
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
     val valueTemperature = remember { mutableFloatStateOf(0f) }
-
     val pageRoute = NavigationItem.Temperature.route
+    if (isNeedUpdateDataTemperatureString.value) {
+        loadDataFromServer(
+            serverIp = serverIp.value,
+            serverPort = serverPort.value,
+            dataString = dataTemperatureString,
+            endpointName = "lights-data/1"
+        )
+        isNeedUpdateDataTemperatureString.value = false
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +69,19 @@ fun Temperature(
             .wrapContentSize(Alignment.TopCenter)
             .verticalScroll(rememberScrollState())
     ) {
-        val filteredFunctionItems = loadAndFilterFunctionItems(functionItems)
+        if (dataTemperatureString.value.isEmpty()) {
+            Text(
+                text = "Нет соединения с сервером",
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+            )
+            return
+        }
+        val dataLights = Json.decodeFromString<FunctionTemperatureData>(dataTemperatureString.value)
+        val filteredFunctionItems = filterFunctionItems(
+            functionItems = functionItems,
+            enableFunctions = dataLights.enableFunctions
+        )
         if (filteredFunctionItems.isEmpty()) {
             Text(
                 text = "У выбранной комнаты нет функций",
@@ -66,7 +96,7 @@ fun Temperature(
             functionItems = filteredFunctionItems
         )
         Text(
-            text = "Температура сейчас: 24 °C",
+            text = "Температура сейчас: ${dataLights.temperature} °C",
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -123,8 +153,20 @@ fun TemperaturePreview() {
         NavigationItem.Lights,
         NavigationItem.Humidity
     )
+    val serverIp = rememberSaveable { mutableStateOf("") }
+    val serverPort = rememberSaveable { mutableStateOf("") }
+    val dataTemperatureString = remember {
+        mutableStateOf(
+            ""
+        )
+    }
+    val isNeedUpdateDataTemperatureString = remember { mutableStateOf(false) }
     Temperature(
         navController = navController,
-        functionItems = functionItems
+        functionItems = functionItems,
+        serverIp = serverIp,
+        serverPort = serverPort,
+        dataTemperatureString = dataTemperatureString,
+        isNeedUpdateDataTemperatureString = isNeedUpdateDataTemperatureString
     )
 }

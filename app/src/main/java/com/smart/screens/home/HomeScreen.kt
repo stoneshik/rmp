@@ -48,7 +48,8 @@ fun HomeScreen(
         loadDataFromServer(
             serverIp = serverIp.value,
             serverPort = serverPort.value,
-            dataString = dataRoomsString
+            dataString = dataRoomsString,
+            endpointName = "room-data"
         )
         isNeedUpdateDataRoomsString.value = false
     }

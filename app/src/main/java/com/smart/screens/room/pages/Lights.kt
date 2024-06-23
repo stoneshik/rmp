@@ -13,8 +13,11 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,15 +29,22 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
+import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
+import com.smart.screens.room.FunctionLightsData
 import com.smart.screens.room.function.FunctionNavigationBar
-import com.smart.screens.room.function.loadAndFilterFunctionItems
+import com.smart.screens.room.function.filterFunctionItems
+import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
 @Composable
 fun Lights(
     navController: NavController,
-    functionItems: Array<NavigationItem>
+    functionItems: Array<NavigationItem>,
+    serverIp: MutableState<String>,
+    serverPort: MutableState<String>,
+    dataLightsString: MutableState<String>,
+    isNeedUpdateDataLightsString: MutableState<Boolean>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     val backgroundSelectElementColor: Color = colorResource(
@@ -42,8 +52,16 @@ fun Lights(
     )
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
     val valueLight = remember { mutableFloatStateOf(0f) }
-
     val pageRoute = NavigationItem.Lights.route
+    if (isNeedUpdateDataLightsString.value) {
+        loadDataFromServer(
+            serverIp = serverIp.value,
+            serverPort = serverPort.value,
+            dataString = dataLightsString,
+            endpointName = "lights-data/1"
+        )
+        isNeedUpdateDataLightsString.value = false
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +69,19 @@ fun Lights(
             .wrapContentSize(Alignment.TopCenter)
             .verticalScroll(rememberScrollState())
     ) {
-        val filteredFunctionItems = loadAndFilterFunctionItems(functionItems)
+        if (dataLightsString.value.isEmpty()) {
+            Text(
+                text = "Нет соединения с сервером",
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+            )
+            return
+        }
+        val dataLights = Json.decodeFromString<FunctionLightsData>(dataLightsString.value)
+        val filteredFunctionItems = filterFunctionItems(
+            functionItems = functionItems,
+            enableFunctions = dataLights.enableFunctions
+        )
         if (filteredFunctionItems.isEmpty()) {
             Text(
                 text = "У выбранной комнаты нет функций",
@@ -66,7 +96,7 @@ fun Lights(
             functionItems = filteredFunctionItems
         )
         Text(
-            text = "Освещенность сейчас: 100%",
+            text = "Освещенность сейчас: ${dataLights.lights}%",
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -123,8 +153,20 @@ fun LightsPreview() {
         NavigationItem.Lights,
         NavigationItem.Humidity
     )
+    val serverIp = rememberSaveable { mutableStateOf("") }
+    val serverPort = rememberSaveable { mutableStateOf("") }
+    val dataLightsString = remember {
+        mutableStateOf(
+            ""
+        )
+    }
+    val isNeedUpdateDataLightsString = remember { mutableStateOf(false) }
     Lights(
         navController = navController,
-        functionItems = functionItems
+        functionItems = functionItems,
+        serverIp = serverIp,
+        serverPort = serverPort,
+        dataLightsString = dataLightsString,
+        isNeedUpdateDataLightsString = isNeedUpdateDataLightsString
     )
 }

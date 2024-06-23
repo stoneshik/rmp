@@ -51,10 +51,20 @@ fun MainScreen() {
     val dataRoomsString = remember { mutableStateOf("") }
     val isNeedUpdateDataRoomsString = remember { mutableStateOf(true) }
 
+    val dataHumidityString = remember { mutableStateOf("") }
+    val isNeedUpdateDataHumidityString = remember { mutableStateOf(true) }
+    val dataLightsString = remember { mutableStateOf("") }
+    val isNeedUpdateDataLightsString = remember { mutableStateOf(true) }
+    val dataTemperatureString = remember { mutableStateOf("") }
+    val isNeedUpdateDataTemperatureString = remember { mutableStateOf(true) }
+
     scheduleDataLoading(
         serverIp = serverIp,
         serverPort = serverPort,
-        isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString
+        isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString,
+        isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString,
+        isNeedUpdateDataLightsString = isNeedUpdateDataLightsString,
+        isNeedUpdateDataTemperatureString = isNeedUpdateDataTemperatureString
     )
 
     Scaffold(
@@ -76,7 +86,14 @@ fun MainScreen() {
                     signalingState = signalingState,
                     dataSelectedRoom = dataSelectedRoom,
                     dataRoomsString = dataRoomsString,
-                    isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString
+                    isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString,
+
+                    dataHumidityString = dataHumidityString,
+                    isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString,
+                    dataLightsString = dataLightsString,
+                    isNeedUpdateDataLightsString = isNeedUpdateDataLightsString,
+                    dataTemperatureString = dataTemperatureString,
+                    isNeedUpdateDataTemperatureString = isNeedUpdateDataTemperatureString
                 )
             }
         },

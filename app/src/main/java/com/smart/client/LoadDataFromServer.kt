@@ -8,12 +8,17 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 
-fun loadDataFromServer(serverIp: String, serverPort: String, dataString: MutableState<String>) {
+fun loadDataFromServer(
+    serverIp: String,
+    serverPort: String,
+    dataString: MutableState<String>,
+    endpointName: String
+) {
     if (serverIp.isEmpty() || serverPort.isEmpty()) {
         return
     }
     val client = OkHttpClient()
-    val url = "http://${serverIp}:${serverPort}/room-data"
+    val url = "http://${serverIp}:${serverPort}/${endpointName}"
     val request = Request.Builder()
         .url(url)
         .build()
