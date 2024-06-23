@@ -19,6 +19,7 @@ fun loadDataFromServer(serverIp: String, serverPort: String, dataString: Mutable
         .build()
     client.newCall(request).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
+            dataString.value = ""
             e.printStackTrace()
         }
         override fun onResponse(call: Call, response: Response) {

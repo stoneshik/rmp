@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
-import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
 import kotlinx.serialization.json.Json
 
@@ -38,19 +36,9 @@ fun HomeScreen(
     navController: NavController,
     titleTopBar: MutableState<String>,
     dataSelectedRoom: MutableState<RoomData>,
-    serverIp: MutableState<String>,
-    serverPort: MutableState<String>,
     dataRoomsString: MutableState<String>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
-    if (dataRoomsString.value.isEmpty()) {
-        loadDataFromServer(
-            serverIp = serverIp.value,
-            serverPort = serverPort.value,
-            dataString = dataRoomsString
-        )
-        return
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -102,8 +90,6 @@ fun HomeScreenPreview() {
            )
        )
    }
-    val serverIp = rememberSaveable { mutableStateOf("127.0.0.1") }
-    val serverPort = rememberSaveable { mutableStateOf("8080") }
     val dataRoomsString = remember {
         mutableStateOf(
             "[{\"id\":0,\"title\":\"Гостиная\",\"nameIcon\":\"living_room\"},{\"id\":1,\"title\":\"Спальня\",\"nameIcon\":\"bedroom\"},{\"id\":2,\"title\":\"Кухня\",\"nameIcon\":\"kitchen\"},{\"id\":3,\"title\":\"Ванная\",\"nameIcon\":\"bathroom\"},{\"id\":4,\"title\":\"Студия\",\"nameIcon\":\"studio\"}]"
@@ -113,8 +99,6 @@ fun HomeScreenPreview() {
         navController = navController,
         titleTopBar = titleTopBar,
         dataSelectedRoom = dataSelectedRoom,
-        serverIp = serverIp,
-        serverPort = serverPort,
         dataRoomsString = dataRoomsString
     )
 }

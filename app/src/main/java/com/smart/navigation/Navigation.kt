@@ -30,8 +30,6 @@ fun Navigation(
                 navController = navController,
                 titleTopBar = titleTopBar,
                 dataSelectedRoom = dataSelectedRoom,
-                serverIp = serverIp,
-                serverPort = serverPort,
                 dataRoomsString = dataRoomsString
             )
         }
