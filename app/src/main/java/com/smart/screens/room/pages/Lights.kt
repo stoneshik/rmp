@@ -31,6 +31,8 @@ import androidx.navigation.compose.rememberNavController
 import com.smart.R
 import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
+import com.smart.screens.home.RoomData
+import com.smart.screens.home.RoomIcon
 import com.smart.screens.room.FunctionLightsData
 import com.smart.screens.room.function.FunctionNavigationBar
 import com.smart.screens.room.function.filterFunctionItems
@@ -44,7 +46,8 @@ fun Lights(
     serverIp: MutableState<String>,
     serverPort: MutableState<String>,
     dataLightsString: MutableState<String>,
-    isNeedUpdateDataLightsString: MutableState<Boolean>
+    isNeedUpdateDataLightsString: MutableState<Boolean>,
+    dataSelectedRoom: MutableState<RoomData>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     val backgroundSelectElementColor: Color = colorResource(
@@ -58,7 +61,7 @@ fun Lights(
             serverIp = serverIp.value,
             serverPort = serverPort.value,
             dataString = dataLightsString,
-            endpointName = "lights-data/1"
+            endpointName = "lights-data/${dataSelectedRoom.value.id}"
         )
         isNeedUpdateDataLightsString.value = false
     }
@@ -157,16 +160,26 @@ fun LightsPreview() {
     val serverPort = rememberSaveable { mutableStateOf("") }
     val dataLightsString = remember {
         mutableStateOf(
-            ""
+            "{\"idRoom\":1,\"enableFunctions\":[\"humidity_room\",\"lights_room\",\"temperature_room\"],\"lights\":90.0}"
         )
     }
     val isNeedUpdateDataLightsString = remember { mutableStateOf(false) }
+    val dataSelectedRoom = remember {
+        mutableStateOf(
+            RoomData(
+                0,
+                NavigationItem.Home.title,
+                RoomIcon.LivingRoom.nameIcon
+            )
+        )
+    }
     Lights(
         navController = navController,
         functionItems = functionItems,
         serverIp = serverIp,
         serverPort = serverPort,
         dataLightsString = dataLightsString,
-        isNeedUpdateDataLightsString = isNeedUpdateDataLightsString
+        isNeedUpdateDataLightsString = isNeedUpdateDataLightsString,
+        dataSelectedRoom = dataSelectedRoom
     )
 }

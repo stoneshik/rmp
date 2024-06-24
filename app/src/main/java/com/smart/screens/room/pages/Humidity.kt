@@ -31,6 +31,8 @@ import androidx.navigation.compose.rememberNavController
 import com.smart.R
 import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
+import com.smart.screens.home.RoomData
+import com.smart.screens.home.RoomIcon
 import com.smart.screens.room.FunctionHumidityData
 import com.smart.screens.room.function.FunctionNavigationBar
 import com.smart.screens.room.function.filterFunctionItems
@@ -44,7 +46,8 @@ fun Humidity(
     serverIp: MutableState<String>,
     serverPort: MutableState<String>,
     dataHumidityString: MutableState<String>,
-    isNeedUpdateDataHumidityString: MutableState<Boolean>
+    isNeedUpdateDataHumidityString: MutableState<Boolean>,
+    dataSelectedRoom: MutableState<RoomData>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     val backgroundSelectElementColor: Color = colorResource(
@@ -58,7 +61,7 @@ fun Humidity(
             serverIp = serverIp.value,
             serverPort = serverPort.value,
             dataString = dataHumidityString,
-            endpointName = "humidity-data/1"
+            endpointName = "humidity-data/${dataSelectedRoom.value.id}"
         )
         isNeedUpdateDataHumidityString.value = false
     }
@@ -157,16 +160,26 @@ fun HumidityPreview() {
     val serverPort = rememberSaveable { mutableStateOf("") }
     val dataHumidityString = remember {
         mutableStateOf(
-            ""
+            "{\"idRoom\":1,\"enableFunctions\":[\"humidity_room\",\"lights_room\",\"temperature_room\"],\"humidity\":40.0}"
         )
     }
     val isNeedUpdateDataHumidityString = remember { mutableStateOf(false) }
+    val dataSelectedRoom = remember {
+        mutableStateOf(
+            RoomData(
+                0,
+                NavigationItem.Home.title,
+                RoomIcon.LivingRoom.nameIcon
+            )
+        )
+    }
     Humidity(
         navController = navController,
         functionItems = functionItems,
         serverIp = serverIp,
         serverPort = serverPort,
         dataHumidityString = dataHumidityString,
-        isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString
+        isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString,
+        dataSelectedRoom = dataSelectedRoom
     )
 }

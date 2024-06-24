@@ -31,6 +31,8 @@ import androidx.navigation.compose.rememberNavController
 import com.smart.R
 import com.smart.client.loadDataFromServer
 import com.smart.navigation.NavigationItem
+import com.smart.screens.home.RoomData
+import com.smart.screens.home.RoomIcon
 import com.smart.screens.room.FunctionTemperatureData
 import com.smart.screens.room.function.FunctionNavigationBar
 import com.smart.screens.room.function.filterFunctionItems
@@ -44,7 +46,8 @@ fun Temperature(
     serverIp: MutableState<String>,
     serverPort: MutableState<String>,
     dataTemperatureString: MutableState<String>,
-    isNeedUpdateDataTemperatureString: MutableState<Boolean>
+    isNeedUpdateDataTemperatureString: MutableState<Boolean>,
+    dataSelectedRoom: MutableState<RoomData>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     val backgroundSelectElementColor: Color = colorResource(
@@ -58,7 +61,7 @@ fun Temperature(
             serverIp = serverIp.value,
             serverPort = serverPort.value,
             dataString = dataTemperatureString,
-            endpointName = "lights-data/1"
+            endpointName = "temperature-data/${dataSelectedRoom.value.id}"
         )
         isNeedUpdateDataTemperatureString.value = false
     }
@@ -157,16 +160,26 @@ fun TemperaturePreview() {
     val serverPort = rememberSaveable { mutableStateOf("") }
     val dataTemperatureString = remember {
         mutableStateOf(
-            ""
+            "{\"idRoom\":1,\"enableFunctions\":[\"humidity_room\",\"lights_room\",\"temperature_room\"],\"temperature\":30.0}"
         )
     }
     val isNeedUpdateDataTemperatureString = remember { mutableStateOf(false) }
+    val dataSelectedRoom = remember {
+        mutableStateOf(
+            RoomData(
+                0,
+                NavigationItem.Home.title,
+                RoomIcon.LivingRoom.nameIcon
+            )
+        )
+    }
     Temperature(
         navController = navController,
         functionItems = functionItems,
         serverIp = serverIp,
         serverPort = serverPort,
         dataTemperatureString = dataTemperatureString,
-        isNeedUpdateDataTemperatureString = isNeedUpdateDataTemperatureString
+        isNeedUpdateDataTemperatureString = isNeedUpdateDataTemperatureString,
+        dataSelectedRoom = dataSelectedRoom
     )
 }

@@ -69,7 +69,8 @@ fun Navigation(
                 serverIp = serverIp,
                 serverPort = serverPort,
                 dataTemperatureString = dataTemperatureString,
-                isNeedUpdateDataTemperatureString = isNeedUpdateDataTemperatureString
+                isNeedUpdateDataTemperatureString = isNeedUpdateDataTemperatureString,
+                dataSelectedRoom = dataSelectedRoom
             )
         }
         composable(NavigationItem.Lights.route) {
@@ -79,7 +80,8 @@ fun Navigation(
                 serverIp = serverIp,
                 serverPort = serverPort,
                 dataLightsString = dataLightsString,
-                isNeedUpdateDataLightsString = isNeedUpdateDataLightsString
+                isNeedUpdateDataLightsString = isNeedUpdateDataLightsString,
+                dataSelectedRoom = dataSelectedRoom
             )
         }
         composable(NavigationItem.Humidity.route) {
@@ -89,7 +91,8 @@ fun Navigation(
                 serverIp = serverIp,
                 serverPort = serverPort,
                 dataHumidityString = dataHumidityString,
-                isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString
+                isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString,
+                dataSelectedRoom = dataSelectedRoom
             )
         }
     }
