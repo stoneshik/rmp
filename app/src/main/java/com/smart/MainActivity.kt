@@ -37,8 +37,7 @@ fun MainScreen() {
     val titleTopBar = remember { mutableStateOf(NavigationItem.Home.title) }
     val serverIp = rememberSaveable { mutableStateOf("192.168.0.192") }
     val serverPort = rememberSaveable { mutableStateOf("8080") }
-    val signalingIsWork = remember { mutableStateOf(false) }
-    val signalingState = remember { mutableStateOf(true) }
+    val dataSignalingString = remember { mutableStateOf("") }
     val dataSelectedRoom = remember {
         mutableStateOf(
             RoomData(
@@ -61,6 +60,7 @@ fun MainScreen() {
     scheduleDataLoading(
         serverIp = serverIp,
         serverPort = serverPort,
+        dataSignalingString = dataSignalingString,
         isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString,
         isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString,
         isNeedUpdateDataLightsString = isNeedUpdateDataLightsString,
@@ -82,8 +82,7 @@ fun MainScreen() {
                     titleTopBar = titleTopBar,
                     serverIp = serverIp,
                     serverPort = serverPort,
-                    signalingIsWork = signalingIsWork,
-                    signalingState = signalingState,
+                    dataSignalingString = dataSignalingString,
                     dataSelectedRoom = dataSelectedRoom,
                     dataRoomsString = dataRoomsString,
                     isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString,

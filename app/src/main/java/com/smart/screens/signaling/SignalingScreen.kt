@@ -1,4 +1,4 @@
-package com.smart.screens
+package com.smart.screens.signaling
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,11 +23,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smart.R
+import kotlinx.serialization.json.Json
 
 @Composable
 fun Signaling(
-    signalingIsWork: MutableState<Boolean>,
-    signalingState: MutableState<Boolean>
+    dataSignalingString: MutableState<String>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     val textColor: Color = colorResource(id = R.color.textColor)
@@ -38,8 +38,20 @@ fun Signaling(
             .background(backgroundColor)
             .wrapContentSize(Alignment.Center)
     ) {
+        if (dataSignalingString.value.isEmpty()) {
+            Text(
+                text = "Нет соединения с сервером",
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+            )
+            return
+        }
+        val dataSignaling = Json.decodeFromString<SignalingData>(dataSignalingString.value)
+        var signalingIsWork =
+            dataSignaling.signalingWorkingState == SignalingWorkingState.WORK.state ||
+                    dataSignaling.signalingWorkingState == SignalingWorkingState.TURNS_ON.state
         Text(
-            text = createStateSignalingString(signalingIsWork.value),
+            text = createStateSignalingString(dataSignaling.signalingWorkingState),
             fontWeight = FontWeight.Bold,
             color = textColor,
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -47,9 +59,9 @@ fun Signaling(
             fontSize = 20.sp
         )
         Switch(
-            checked = signalingIsWork.value,
+            checked = signalingIsWork,
             onCheckedChange = {
-                signalingIsWork.value = it
+                signalingIsWork = it
             },
             colors = SwitchDefaults.colors(
                 checkedThumbColor = MaterialTheme.colorScheme.primary,
@@ -59,8 +71,8 @@ fun Signaling(
             ),
             modifier = Modifier.padding(bottom = 24.dp),
         )
-        if (signalingIsWork.value) {
-            if (signalingState.value) {
+        if (signalingIsWork) {
+            if (dataSignaling.signalingState) {
                 Text(
                     text = "Все спокойно",
                     fontWeight = FontWeight.Bold,
@@ -86,18 +98,20 @@ fun Signaling(
 @Preview(showBackground = true)
 @Composable
 fun SignalingPreview() {
-    val signalingIsWork = remember { mutableStateOf(true) }
-    val signalingState = remember { mutableStateOf(true) }
+    val dataSignalingString = remember {
+        mutableStateOf("")
+    }
     Signaling(
-        signalingIsWork = signalingIsWork,
-        signalingState = signalingState
+        dataSignalingString = dataSignalingString
     )
 }
 
-private fun createStateSignalingString(signalingIsWork: Boolean) : String {
+private fun createStateSignalingString(signalingWorkingStateString: String) : String {
     val firstPart = "Состояние сигнализации"
-    if (!signalingIsWork) {
-        return String.format("%s: Выключена", firstPart)
+    for (signalingWorkingStateEnum in SignalingWorkingState.entries) {
+        if (signalingWorkingStateEnum.state.equals(signalingWorkingStateString)) {
+            return String.format("%s: %s", firstPart, signalingWorkingStateEnum.description)
+        }
     }
-    return String.format("%s: Работает", firstPart)
+    return String.format("%s: Серверная ошибка", firstPart)
 }

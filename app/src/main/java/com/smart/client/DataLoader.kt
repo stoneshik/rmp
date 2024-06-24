@@ -5,11 +5,13 @@ import android.os.Looper
 import androidx.compose.runtime.MutableState
 
 class DataLoader {
+    private val DATA_SIGNALING_MAX_SECONDS: Int = 50
     private val DATA_ROOM_MAX_SECONDS: Int = 10
     private val DATA_FUNCTION_HUMIDITY_SECONDS: Int = 10
     private val DATA_FUNCTION_LIGHTS_SECONDS: Int = 10
     private val DATA_FUNCTION_TEMPERATURE_SECONDS: Int = 10
 
+    private var dataSignalingLivingSeconds: Int = 0
     private var dataRoomLivingSeconds: Int = 0
     private var dataFunctionHumidityLivingSeconds: Int = 0
     private var dataFunctionLightsLivingSeconds: Int = 0
@@ -18,20 +20,23 @@ class DataLoader {
     fun updateDataStringsIfLifetimeExceed(
         serverIp: MutableState<String>,
         serverPort: MutableState<String>,
+        dataSignalingString: MutableState<String>,
         isNeedUpdateDataRoomsString: MutableState<Boolean>,
         isNeedUpdateDataHumidityString: MutableState<Boolean>,
         isNeedUpdateDataLightsString: MutableState<Boolean>,
         isNeedUpdateDataTemperatureString: MutableState<Boolean>
     ) {
-        /*dataRoomLivingSeconds++
-        if (dataRoomLivingSeconds > DATA_ROOM_MAX_SECONDS) {
-            dataRoomLivingSeconds = 0
+        dataSignalingLivingSeconds++
+        if (dataSignalingLivingSeconds > DATA_SIGNALING_MAX_SECONDS) {
+            dataSignalingLivingSeconds = 0
             loadDataFromServer(
                 serverIp = serverIp.value,
                 serverPort = serverPort.value,
-                dataString = dataRoomsString
+                dataString = dataSignalingString,
+                endpointName = "signaling-data"
             )
-        }*/
+        }
+
         dataRoomLivingSeconds++
         dataFunctionHumidityLivingSeconds++
         dataFunctionLightsLivingSeconds++
@@ -66,6 +71,7 @@ class DataLoader {
 fun scheduleDataLoading(
     serverIp: MutableState<String>,
     serverPort: MutableState<String>,
+    dataSignalingString: MutableState<String>,
     isNeedUpdateDataRoomsString: MutableState<Boolean>,
     isNeedUpdateDataHumidityString: MutableState<Boolean>,
     isNeedUpdateDataLightsString: MutableState<Boolean>,
@@ -78,6 +84,7 @@ fun scheduleDataLoading(
             dataLoader.updateDataStringsIfLifetimeExceed(
                 serverIp = serverIp,
                 serverPort = serverPort,
+                dataSignalingString = dataSignalingString,
                 isNeedUpdateDataRoomsString = isNeedUpdateDataRoomsString,
                 isNeedUpdateDataHumidityString = isNeedUpdateDataHumidityString,
                 isNeedUpdateDataLightsString = isNeedUpdateDataLightsString,
