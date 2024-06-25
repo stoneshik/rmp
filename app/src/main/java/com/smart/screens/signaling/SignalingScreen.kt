@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,10 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smart.R
+import com.smart.client.postDataToServer
 import kotlinx.serialization.json.Json
 
 @Composable
 fun Signaling(
+    serverIp: MutableState<String>,
+    serverPort: MutableState<String>,
     dataSignalingString: MutableState<String>
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
@@ -62,6 +66,12 @@ fun Signaling(
             checked = signalingIsWork,
             onCheckedChange = {
                 signalingIsWork = it
+                postDataToServer(
+                    serverIp = serverIp.value,
+                    serverPort = serverPort.value,
+                    bodyString = "",
+                    endpointName = "signaling-data"
+                )
             },
             colors = SwitchDefaults.colors(
                 checkedThumbColor = MaterialTheme.colorScheme.primary,
@@ -71,7 +81,7 @@ fun Signaling(
             ),
             modifier = Modifier.padding(bottom = 24.dp),
         )
-        if (signalingIsWork) {
+        if (dataSignaling.signalingWorkingState.equals(SignalingWorkingState.WORK.state)) {
             if (dataSignaling.signalingState) {
                 Text(
                     text = "Все спокойно",
@@ -98,10 +108,14 @@ fun Signaling(
 @Preview(showBackground = true)
 @Composable
 fun SignalingPreview() {
+    val serverIp = rememberSaveable { mutableStateOf("") }
+    val serverPort = rememberSaveable { mutableStateOf("") }
     val dataSignalingString = remember {
         mutableStateOf("")
     }
     Signaling(
+        serverIp = serverIp,
+        serverPort = serverPort,
         dataSignalingString = dataSignalingString
     )
 }

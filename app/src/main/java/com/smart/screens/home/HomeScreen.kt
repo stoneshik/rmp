@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
-import com.smart.client.loadDataFromServer
+import com.smart.client.getDataFromServer
 import com.smart.navigation.NavigationItem
 import kotlinx.serialization.json.Json
 
@@ -45,7 +45,7 @@ fun HomeScreen(
 ) {
     val backgroundColor: Color = colorResource(id = R.color.backgroundColor)
     if (isNeedUpdateDataRoomsString.value) {
-        loadDataFromServer(
+        getDataFromServer(
             serverIp = serverIp.value,
             serverPort = serverPort.value,
             dataString = dataRoomsString,

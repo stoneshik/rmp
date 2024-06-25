@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
-import com.smart.client.loadDataFromServer
+import com.smart.client.getDataFromServer
 import com.smart.navigation.NavigationItem
 import com.smart.screens.home.RoomData
 import com.smart.screens.home.RoomIcon
@@ -57,7 +57,7 @@ fun Lights(
     val valueLight = remember { mutableFloatStateOf(0f) }
     val pageRoute = NavigationItem.Lights.route
     if (isNeedUpdateDataLightsString.value) {
-        loadDataFromServer(
+        getDataFromServer(
             serverIp = serverIp.value,
             serverPort = serverPort.value,
             dataString = dataLightsString,

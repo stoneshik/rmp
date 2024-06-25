@@ -26,6 +26,7 @@ import com.smart.navigation.NavigationItem
 import com.smart.screens.home.RoomData
 import com.smart.screens.home.RoomIcon
 import com.smart.screens.signaling.SignalingData
+import com.smart.screens.signaling.SignalingWorkingState
 import kotlinx.serialization.json.Json
 
 class MainActivity : ComponentActivity() {
@@ -127,5 +128,6 @@ fun checkAlarm(dataSignalingString: MutableState<String>): Boolean {
         return true
     }
     val dataSignaling = Json.decodeFromString<SignalingData>(dataSignalingString.value)
-    return dataSignaling.signalingState
+    return dataSignaling.signalingState ||
+            !dataSignaling.signalingWorkingState.equals(SignalingWorkingState.WORK.state)
 }

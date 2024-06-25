@@ -46,6 +46,8 @@ fun Navigation(
         }
         composable(NavigationItem.Signaling.route) {
             Signaling(
+                serverIp = serverIp,
+                serverPort = serverPort,
                 dataSignalingString = dataSignalingString
             )
         }
