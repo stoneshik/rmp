@@ -5,11 +5,11 @@ import android.os.Looper
 import androidx.compose.runtime.MutableState
 
 class DataLoader {
-    private val DATA_SIGNALING_MAX_SECONDS: Int = 50
+    private val DATA_SIGNALING_MAX_SECONDS: Int = 5
     private val DATA_ROOM_MAX_SECONDS: Int = 10
-    private val DATA_FUNCTION_HUMIDITY_SECONDS: Int = 10
-    private val DATA_FUNCTION_LIGHTS_SECONDS: Int = 10
-    private val DATA_FUNCTION_TEMPERATURE_SECONDS: Int = 10
+    private val DATA_FUNCTION_HUMIDITY_SECONDS: Int = 3
+    private val DATA_FUNCTION_LIGHTS_SECONDS: Int = 3
+    private val DATA_FUNCTION_TEMPERATURE_SECONDS: Int = 3
 
     private var dataSignalingLivingSeconds: Int = 0
     private var dataRoomLivingSeconds: Int = 0
