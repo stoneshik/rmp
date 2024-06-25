@@ -73,3 +73,12 @@ data class FunctionTemperatureData(
         return result
     }
 }
+
+@Serializable
+data class FunctionHumidityDataRequest(val idRoom: Int, val humidity: Float) {}
+
+@Serializable
+data class FunctionLightsDataRequest(val idRoom: Int, val lights: Float) {}
+
+@Serializable
+data class FunctionTemperatureDataRequest(val idRoom: Int, val temperature: Float) {}

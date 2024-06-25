@@ -30,12 +30,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
 import com.smart.client.getDataFromServer
+import com.smart.client.postDataToServer
 import com.smart.navigation.NavigationItem
 import com.smart.screens.home.RoomData
 import com.smart.screens.home.RoomIcon
 import com.smart.screens.room.FunctionLightsData
+import com.smart.screens.room.FunctionLightsDataRequest
 import com.smart.screens.room.function.FunctionNavigationBar
 import com.smart.screens.room.function.filterFunctionItems
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
@@ -54,8 +57,9 @@ fun Lights(
         id = R.color.backgroundSelectElementColor
     )
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
-    val valueLight = remember { mutableFloatStateOf(0f) }
+    val valueLights = remember { mutableFloatStateOf(0f) }
     val pageRoute = NavigationItem.Lights.route
+    val selectedRoomId = dataSelectedRoom.value.id
     if (isNeedUpdateDataLightsString.value) {
         getDataFromServer(
             serverIp = serverIp.value,
@@ -107,7 +111,7 @@ fun Lights(
                 .padding(top = 64.dp, bottom = 64.dp)
         )
         Text(
-            text = "Текущее значение: ${valueLight.floatValue.roundToInt().toFloat()}%",
+            text = "Текущее значение: ${valueLights.floatValue}%",
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -115,10 +119,10 @@ fun Lights(
                 .padding(bottom = 12.dp)
         )
         Slider(
-            value = valueLight.floatValue,
+            value = valueLights.floatValue,
             valueRange = 0f..100f,
             steps = 19,
-            onValueChange = { valueLight.floatValue = it },
+            onValueChange = { valueLights.floatValue = it.roundToInt().toFloat() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
@@ -126,6 +130,14 @@ fun Lights(
         )
         Button(
             onClick = {
+                postDataToServer(
+                    serverIp = serverIp.value,
+                    serverPort = serverPort.value,
+                    bodyString = Json.encodeToString(
+                        FunctionLightsDataRequest(selectedRoomId, valueLights.value)
+                    ),
+                    endpointName = "lights-data"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

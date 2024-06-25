@@ -30,12 +30,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
 import com.smart.client.getDataFromServer
+import com.smart.client.postDataToServer
 import com.smart.navigation.NavigationItem
 import com.smart.screens.home.RoomData
 import com.smart.screens.home.RoomIcon
 import com.smart.screens.room.FunctionTemperatureData
+import com.smart.screens.room.FunctionTemperatureDataRequest
 import com.smart.screens.room.function.FunctionNavigationBar
 import com.smart.screens.room.function.filterFunctionItems
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
@@ -56,6 +59,7 @@ fun Temperature(
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
     val valueTemperature = remember { mutableFloatStateOf(0f) }
     val pageRoute = NavigationItem.Temperature.route
+    val selectedRoomId = dataSelectedRoom.value.id
     if (isNeedUpdateDataTemperatureString.value) {
         getDataFromServer(
             serverIp = serverIp.value,
@@ -107,7 +111,7 @@ fun Temperature(
                 .padding(top = 64.dp, bottom = 64.dp)
         )
         Text(
-            text = "Текущее значение: ${valueTemperature.floatValue.roundToInt().toFloat()} °C",
+            text = "Текущее значение: ${valueTemperature.floatValue} °C",
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -118,7 +122,7 @@ fun Temperature(
             value = valueTemperature.floatValue,
             valueRange = 0f..40f,
             steps = 39,
-            onValueChange = { valueTemperature.floatValue = it },
+            onValueChange = { valueTemperature.floatValue = it.roundToInt().toFloat() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
@@ -126,6 +130,14 @@ fun Temperature(
         )
         Button(
             onClick = {
+                postDataToServer(
+                    serverIp = serverIp.value,
+                    serverPort = serverPort.value,
+                    bodyString = Json.encodeToString(
+                        FunctionTemperatureDataRequest(selectedRoomId, valueTemperature.value)
+                    ),
+                    endpointName = "temperature-data"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

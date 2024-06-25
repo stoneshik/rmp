@@ -30,12 +30,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.smart.R
 import com.smart.client.getDataFromServer
+import com.smart.client.postDataToServer
 import com.smart.navigation.NavigationItem
 import com.smart.screens.home.RoomData
 import com.smart.screens.home.RoomIcon
 import com.smart.screens.room.FunctionHumidityData
+import com.smart.screens.room.FunctionHumidityDataRequest
 import com.smart.screens.room.function.FunctionNavigationBar
 import com.smart.screens.room.function.filterFunctionItems
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
@@ -56,12 +59,13 @@ fun Humidity(
     val selectElementTextColor: Color = colorResource(id = R.color.selectElementTextColor)
     val valueHumidity = remember { mutableFloatStateOf(0f) }
     val pageRoute = NavigationItem.Humidity.route
+    val selectedRoomId = dataSelectedRoom.value.id
     if (isNeedUpdateDataHumidityString.value) {
         getDataFromServer(
             serverIp = serverIp.value,
             serverPort = serverPort.value,
             dataString = dataHumidityString,
-            endpointName = "humidity-data/${dataSelectedRoom.value.id}"
+            endpointName = "humidity-data/${selectedRoomId}"
         )
         isNeedUpdateDataHumidityString.value = false
     }
@@ -107,7 +111,7 @@ fun Humidity(
                 .padding(top = 64.dp, bottom = 64.dp)
         )
         Text(
-            text = "Текущее значение: ${valueHumidity.floatValue.roundToInt().toFloat()}%",
+            text = "Текущее значение: ${valueHumidity.floatValue}%",
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -118,7 +122,7 @@ fun Humidity(
             value = valueHumidity.floatValue,
             valueRange = 0f..100f,
             steps = 19,
-            onValueChange = { valueHumidity.floatValue = it },
+            onValueChange = { valueHumidity.floatValue = it.roundToInt().toFloat() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
@@ -126,6 +130,14 @@ fun Humidity(
         )
         Button(
             onClick = {
+                postDataToServer(
+                    serverIp = serverIp.value,
+                    serverPort = serverPort.value,
+                    bodyString = Json.encodeToString(
+                        FunctionHumidityDataRequest(selectedRoomId, valueHumidity.value)
+                    ),
+                    endpointName = "humidity-data"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

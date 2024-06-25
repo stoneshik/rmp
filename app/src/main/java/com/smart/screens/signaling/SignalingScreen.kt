@@ -111,7 +111,7 @@ fun SignalingPreview() {
     val serverIp = rememberSaveable { mutableStateOf("") }
     val serverPort = rememberSaveable { mutableStateOf("") }
     val dataSignalingString = remember {
-        mutableStateOf("")
+        mutableStateOf("{\"signalingWorkingState\":\"work\",\"signalingState\":true}")
     }
     Signaling(
         serverIp = serverIp,
